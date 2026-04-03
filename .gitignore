@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+torch_compile/
+.pytest_cache/
+
+.DS_Store
