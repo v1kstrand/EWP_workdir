@@ -1,12 +1,37 @@
 # Endpoint-Only EWP/SIE
 
-This fork is a stripped-down copy of `EWP_SIE_interpol`.
+This repository is an endpoint-only EWP variant built on top of the SIE codebase.
 
-What changed:
-- the `EWPInterpol` training path is endpoint-only by construction
-- interpolation loss and position loss are removed from the model and logging path
-- optional `EMA C` support is kept
-- the rest of the training stack is unchanged
+If you already know SIE, the goal is the same:
+- learn a split representation with an invariant part and an equivariant part
+- make the equivariant branch transform predictably across views
+
+The difference is where the transform signal comes from.
+
+In SIE, training uses the known rotation between two views. The predictor is conditioned on that ground-truth transform and learns to map one equivariant embedding to the other.
+
+In EWP, training does not use known view rotations as supervision. Instead, the model learns a pose code from each view:
+- `q_x = C(x_equi)`
+- `q_y = C(y_equi)`
+- `q_delta = q_x^{-1} q_y`
+
+That learned relative transform is then used to transport one equivariant embedding toward the other:
+- `P(x_equi, q_delta) -> y_equi`
+- `P(y_equi, q_delta^{-1}) -> x_equi`
+
+So the method keeps the geometric structure of SIE:
+- quaternion pose codes
+- analytic relative transform
+- analytic inverse transform
+- symmetric endpoint transport
+
+But it removes the need to provide ground-truth rotations during training. The model must discover a useful latent pose space on its own while still supporting equivariant prediction.
+
+This fork is intentionally minimal:
+- the training path is endpoint-only by construction
+- interpolation and position losses are removed
+- optional `EMA C` support is kept for stabilizing the learned pose head
+- the rest of the training stack remains close to the current EWP/SIE implementation
 
 # Self-Supervised Learning of Split Invariant Equivariant Representations (SIE)
 
