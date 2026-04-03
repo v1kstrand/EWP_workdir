@@ -1,6 +1,6 @@
-# Endpoint-Only EWP/SIE
+# EWP
 
-This repository is an endpoint-only EWP variant built on top of the SIE codebase.
+This repository provides EWP, built on top of the SIE codebase.
 
 If you already know SIE, the goal is the same:
 - learn a split representation with an invariant part and an equivariant part
@@ -27,11 +27,11 @@ So the method keeps the geometric structure of SIE:
 
 But it removes the need to provide ground-truth rotations during training. The model must discover a useful latent pose space on its own while still supporting equivariant prediction.
 
-This fork is intentionally minimal:
-- the training path is endpoint-only by construction
-- interpolation and position losses are removed
-- optional `EMA C` support is kept for stabilizing the learned pose head
-- the rest of the training stack remains close to the current EWP/SIE implementation
+The implementation in this repository focuses on the core EWP training path:
+- split invariant/equivariant representations
+- learned quaternion pose codes
+- relative-transform-conditioned equivariant prediction
+- optional `EMA C` support for stabilizing the learned pose head
 
 # Self-Supervised Learning of Split Invariant Equivariant Representations (SIE)
 
